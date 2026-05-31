@@ -57,8 +57,8 @@
 - Test a deployed build by loading once, going offline, and reloading.
 - Run `make` before finishing changes.
 - Treat `make format` as the canonical formatter.
-- Use `npx prettier --write` for formatting and lint-style checks only. `npx` is development tooling, not a build step or runtime dependency.
+- Use `npx prettier --write` and `npx eslint` for formatting and linting only. `npx` is development tooling, not a build step or runtime dependency.
 - Use `python3 -m json.tool --indent 2 manifest.json | sponge manifest.json` for JSON formatting.
 - Treat `make check` as the minimum verification command.
-- `make check` should verify required files, validate JSON, check JavaScript syntax with `node`, and confirm `sw.js` lists app shell files.
+- `make check` should verify required files, validate JSON, check formatting with Prettier, lint JavaScript with ESLint, check JavaScript syntax with `node`, and confirm `sw.js` lists app shell files.
 - Keep verification notes honest and mention any checks that were not run.
