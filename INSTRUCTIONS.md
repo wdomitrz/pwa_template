@@ -41,7 +41,7 @@
 - Do not add hidden build assumptions. Opening the files should reveal all runtime code.
 - Serve locally with `make serve` and open `http://localhost:8000/`.
 - Do not rely on `file://` for PWA testing. Service workers require `localhost` or HTTPS.
-- Keep `sw.js` small and predictable: skip caching on localhost, cache the app shell when deployed, handle same-origin `GET` requests only, and update its file list and cache name together.
+- Keep `sw.js` small and predictable: skip caching on localhost, cache the app shell when deployed, handle `GET` requests with a cache-first fallback, and update its file list and cache name together.
 - Do not swallow service worker registration failures silently. Logging a warning is enough.
 - Keep `manifest.json` valid JSON.
 - Keep `manifest.json` aligned with `index.html`: app name, theme color, start URL, scope, and icon should agree.
