@@ -1,36 +1,42 @@
 # Coding Instructions
 
-- Use this repository as a template for a small static PWA.
-- Keep the app build-free: no bundler, transpiler, framework, package manager, lockfile, generated CSS, or compile step.
-- Keep the root app files simple and explicit: `index.html`, `style.css`, `app.js`, `sw.js`, `icon.svg`, and `manifest.json`.
-- Keep `README.md` short. A one-line description or deployed app link is enough.
-- Keep this `INSTRUCTIONS.md` current when template expectations change.
-- Use `index.html` for document structure, metadata, and links to app assets.
+- Build a small static progressive web app in plain HTML, CSS, JavaScript, JSON, and SVG.
+- Keep the app build-free: no bundler, transpiler, framework, generated CSS, runtime package install, or compile step.
+- Keep the app files simple and explicit: `index.html`, `style.css`, `app.js`, `sw.js`, `icon.svg`, and `manifest.json`.
+- Use `index.html` for semantic document structure, app metadata, and asset links.
 - Use `style.css` for all styling.
-- Use `app.js` for browser logic and service worker registration.
-- Use `sw.js` only for service worker behavior.
+- Use `app.js` for browser logic, state management, rendering, event handling, and service worker registration.
+- Use `sw.js` only for service worker install, activate, and fetch behavior.
 - Use `manifest.json` only for PWA install metadata.
-- Use `icon.svg` as both favicon and install icon unless the app has a clear reason to add more icon assets.
-- Prefer plain JavaScript, HTML, CSS, JSON, and SVG over dependencies.
-- Do not add dependencies for tasks the browser platform already handles well.
-- Keep JavaScript boring and readable: named constants, named functions, clear state, and explicit event handlers.
+- Use `icon.svg` as both favicon and install icon unless the app clearly needs additional icon files.
+- Keep `README.md` short: a one-line description or deployed app link is enough.
+- Prefer browser platform APIs over dependencies.
+- Do not add runtime dependencies for simple UI state, routing, storage, date handling, or DOM work.
+- Keep JavaScript readable: named constants, named functions, clear state, and explicit event handlers.
 - Do not hide important behavior in clever one-liners.
-- Keep DOM lookups near the top of `app.js` when the app is small.
+- Keep DOM lookups easy to find. Put them near the top when that keeps the file clearer, but colocate them with related behavior when that is simpler.
 - Keep startup obvious. There should be one clear path that binds events, renders initial state, and registers the service worker.
-- Keep state explicit. Use plain objects, arrays, maps, or module-level variables when they are enough.
-- Keep rendering separate from state updates once the app has meaningful state.
+- Keep application state explicit. Use plain objects, arrays, maps, or module-level variables when they are enough.
+- Keep pure calculations separate from DOM rendering once the app has meaningful behavior.
+- Render from state instead of letting DOM text, classes, or attributes become the source of truth.
 - Validate user input before writing it into application state.
-- Prefer rendering from state instead of letting DOM text, classes, or attributes become the source of truth.
-- Use button elements for actions.
+- Store data in `localStorage` only when persistence is useful to the user.
+- Namespace stored values with an app-specific key prefix.
+- Keep error handling practical. Handle recoverable browser API failures; let programming errors surface during development.
+- Use `button` elements for actions.
+- Use `a` elements for navigation.
 - Use labels for form inputs.
-- Preserve keyboard focus states.
+- Preserve visible keyboard focus states.
 - Use `aria-live` or `role="status"` for dynamic text that users need to notice.
+- Keep touch targets large enough for mobile use.
+- Avoid interactions that require hover.
 - Keep CSS selectors purposeful. Prefer classes for styling and IDs for unique JavaScript hooks.
 - Keep layout responsive with simple `grid`, `flex`, `width: min(...)`, and media queries.
 - Do not use viewport-scaled font sizes for normal UI text.
-- Avoid decorative complexity in the template. Add richer UI only when the real app needs it.
-- Keep colors simple, but avoid making the entire app one undifferentiated hue.
 - Keep text inside its containers on small screens.
+- Keep colors simple, but avoid making the entire app one undifferentiated hue.
+- Respect `prefers-color-scheme` when it is easy to do so.
+- Avoid decorative complexity unless it helps the app's actual purpose.
 - Do not add hidden build assumptions. Opening the files should reveal all runtime code.
 - Serve locally with `make serve` and open `http://localhost:8000/`.
 - Do not rely on `file://` for PWA testing. Service workers require `localhost` or HTTPS.
@@ -38,20 +44,21 @@
 - Keep deployed PWA behavior offline-capable. When not on localhost, `sw.js` should cache the app shell.
 - If a file is required for first load, list it in `sw.js`.
 - If an app shell file is removed, remove it from `sw.js`.
+- Use an app-specific cache name in `sw.js`.
 - Bump the cache name in `sw.js` when changing cached app shell behavior for a deployed app.
-- Keep service worker logic small: install, activate, and fetch are usually enough.
-- Do not cache third-party requests in the template.
-- Do not swallow service worker registration failures silently. Logging a warning is enough for this template.
+- Keep service worker fetch handling conservative. Cache same-origin `GET` requests only.
+- Do not cache third-party requests unless the app has an explicit offline requirement for them.
+- Do not swallow service worker registration failures silently. Logging a warning is enough.
 - Keep `manifest.json` valid JSON.
 - Keep `manifest.json` aligned with `index.html`: app name, theme color, start URL, scope, and icon should agree.
 - Use `"display": "standalone"` unless the app specifically needs another display mode.
 - Use `"start_url": "."` and `"scope": "."` for simple root-hosted apps.
-- Keep `Makefile` small. It should expose only `format`, `check`, and `serve`.
-- The default `make` target should run `format check`.
-- Use `sponge` for in-place JSON formatting: `python3 -m json.tool --indent 2 manifest.json | sponge manifest.json`.
-- Use `prettier` only when it is already available; do not require a Node project just to format this template.
-- `make check` should verify required files, validate JSON, check JavaScript syntax when `node` is available, and confirm `sw.js` lists app shell files.
+- After one successful HTTPS load, the deployed app should be able to reload offline.
+- Test a deployed build by loading once, going offline, and reloading.
 - Run `make` before finishing changes.
-- Keep verification notes honest. Mention when optional tools such as `prettier` or `node` were not available.
-- Do not edit or rely on the example app repositories when finalizing this template. They are reference material only.
-- Remove local example repositories before publishing the final template, if they are still present.
+- Treat `make format` as the canonical formatter.
+- Use `npx prettier --write` for formatting and lint-style checks only. `npx` is development tooling, not a build step or runtime dependency.
+- Use `python3 -m json.tool --indent 2 manifest.json | sponge manifest.json` for JSON formatting.
+- Treat `make check` as the minimum verification command.
+- `make check` should verify required files, validate JSON, check JavaScript syntax with `node`, and confirm `sw.js` lists app shell files.
+- Keep verification notes honest and mention any checks that were not run.
