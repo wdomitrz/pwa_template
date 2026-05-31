@@ -34,3 +34,4 @@ Copy `template.py` as your initial template for the project. It demonstrates how
 - Use a simple Makefile: `all` should run formatting/fixes, lint/type checks, and tests. Run `make` regularly.
   - See the existing Makefile
 - Maintain a short handoff/status document for ongoing refactors and unfinished decisions.
+- After you are done, remove INSTRUCTIONS.md and template.py files
