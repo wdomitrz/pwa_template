@@ -12,6 +12,7 @@
 - Keep `README.md` short: a one-line description or deployed app link is enough.
 - Prefer browser platform APIs over dependencies.
 - Do not add runtime dependencies for simple UI state, routing, storage, date handling, or DOM work.
+- If an app appears to need a runtime dependency, make that need explicit before adding it.
 - Keep JavaScript readable: named constants, named functions, clear state, and explicit event handlers.
 - Do not hide important behavior in clever one-liners.
 - Keep DOM lookups easy to find. Put them near the top when that keeps the file clearer, but colocate them with related behavior when that is simpler.
@@ -40,14 +41,7 @@
 - Do not add hidden build assumptions. Opening the files should reveal all runtime code.
 - Serve locally with `make serve` and open `http://localhost:8000/`.
 - Do not rely on `file://` for PWA testing. Service workers require `localhost` or HTTPS.
-- Keep the localhost development path cache-free. `sw.js` should not pre-cache or intercept fetches on `localhost`, `127.0.0.1`, or `::1`.
-- Keep deployed PWA behavior offline-capable. When not on localhost, `sw.js` should cache the app shell.
-- If a file is required for first load, list it in `sw.js`.
-- If an app shell file is removed, remove it from `sw.js`.
-- Use an app-specific cache name in `sw.js`.
-- Bump the cache name in `sw.js` when changing cached app shell behavior for a deployed app.
-- Keep service worker fetch handling conservative. Cache same-origin `GET` requests only.
-- Do not cache third-party requests unless the app has an explicit offline requirement for them.
+- Keep `sw.js` small and predictable: skip caching on localhost, cache the app shell when deployed, handle same-origin `GET` requests only, and update its file list and cache name together.
 - Do not swallow service worker registration failures silently. Logging a warning is enough.
 - Keep `manifest.json` valid JSON.
 - Keep `manifest.json` aligned with `index.html`: app name, theme color, start URL, scope, and icon should agree.
