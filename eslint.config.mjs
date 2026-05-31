@@ -2,9 +2,14 @@ const commonRules = {
   curly: "error",
   eqeqeq: ["error", "always"],
   "no-implicit-globals": "error",
+  "no-redeclare": "error",
+  "no-shadow": "error",
+  "no-undef": "error",
   "no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
   "no-var": "error",
+  "object-shorthand": "error",
   "prefer-const": "error",
+  "prefer-template": "error",
 };
 
 export default [

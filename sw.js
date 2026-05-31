@@ -42,8 +42,18 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
-  if (IS_LOCAL) return;
-  if (event.request.method !== "GET") return;
+  if (IS_LOCAL) {
+    return;
+  }
+
+  if (event.request.method !== "GET") {
+    return;
+  }
+
+  const requestUrl = new URL(event.request.url);
+  if (requestUrl.origin !== self.location.origin) {
+    return;
+  }
 
   event.respondWith(
     caches
