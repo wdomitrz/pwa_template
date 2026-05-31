@@ -1,7 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
-  <title id="title">Simple PWA Template</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <rect width="512" height="512" rx="96" fill="#0f766e"/>
-  <path fill="#d9f4ef" d="M144 150c0-24 20-44 44-44h136c24 0 44 20 44 44v212c0 24-20 44-44 44H188c-24 0-44-20-44-44V150Zm44-4c-2 0-4 2-4 4v212c0 2 2 4 4 4h136c2 0 4-2 4-4V150c0-2-2-4-4-4H188Z"/>
-  <path fill="#ffffff" d="M216 212h80v40h-80v-40Zm0 68h80v40h-80v-40Z"/>
-  <path fill="#f9735b" d="M352 118 394 84l18 50 52 2-42 32 14 50-44-28-44 30 12-52-42-31 52-3 18-49Z"/>
+  <circle cx="256" cy="256" r="128" fill="#ffffff"/>
+  <path fill="#0f766e" d="M220 176h72c52 0 88 34 88 80s-36 80-88 80h-32v64h-40V176Zm40 40v80h32c29 0 48-16 48-40s-19-40-48-40h-32Z"/>
 </svg>

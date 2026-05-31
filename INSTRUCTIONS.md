@@ -1,76 +1,57 @@
-# Simple PWA Template Instructions
+# Coding Instructions
 
-Use this repository as a starting point for a small progressive web app that runs directly in the browser. The app must stay static: no build step, bundler, transpiler, framework, or generated assets are required to develop or deploy it.
-
-## Files
-
-Keep the app surface small and explicit:
-
-- `index.html`: document structure, metadata, links to the manifest, icon, stylesheet, and script.
-- `style.css`: all application styling.
-- `app.js`: browser logic, state, rendering, and service worker registration.
-- `sw.js`: offline cache behavior for the app shell.
-- `icon.svg`: install icon and browser favicon.
-- `manifest.json`: PWA install metadata.
-- `README.md`: short project summary or deployed app link.
-- `INSTRUCTIONS.md`: project-specific guidance for future work.
-- `Makefile`: local validation and helper commands.
-
-Do not add a package manager, dependency lockfile, compiler output, or generated CSS unless the app has outgrown this template and the decision is deliberate.
-
-## Development Workflow
-
-1. Replace the placeholder app name, description, colors, and icon.
-2. Build the real application in the existing files instead of adding a framework.
-3. Keep domain state in plain objects and arrays.
-4. Keep pure calculations separate from DOM rendering.
-5. Keep DOM lookups, event binding, state updates, and rendering easy to find.
-6. Update `manifest.json` and `sw.js` whenever the file list or app identity changes.
-7. Run `make` before committing.
-
-Serve the app locally with:
-
-```sh
-make serve
-```
-
-Open `http://localhost:8000/`. Service workers require `localhost` or HTTPS; opening `index.html` through `file://` will not exercise install or offline behavior.
-
-## Coding Standards
-
-- Write clear, boring JavaScript. Avoid clever shortcuts that make later changes harder.
-- Structure the app intentionally even when it is small: named constants, small functions, explicit state, and one obvious startup path.
-- Validate user input at the boundary before it reaches application state.
-- Prefer event delegation only when it reduces duplicated listeners without hiding behavior.
-- Render from state instead of letting scattered event handlers become the source of truth.
-- Keep CSS selectors purposeful and stable. Prefer classes for styling and IDs for single DOM hooks.
-- Make responsive layout decisions explicit with `min()`, `max-width`, `grid`, `flex`, and media queries.
-- Keep accessibility in the normal implementation path: labels, focus states, button elements for actions, and useful status text for dynamic updates.
-- Do not cut corners on offline behavior. If a file is needed for first load, include it in the service worker app shell cache.
-
-## PWA Checklist
-
-- `manifest.json` has a correct `name`, `short_name`, `start_url`, `scope`, `display`, `theme_color`, `background_color`, and icon entry.
-- `index.html` includes the manifest, icon, theme color, viewport, stylesheet, and deferred script.
-- `sw.js` caches the complete app shell and removes old caches in `activate`.
-- `app.js` registers the service worker and reports registration failures without breaking the app.
-- The app works offline after one successful load from `localhost` or HTTPS.
-- The installed app opens to the right route on desktop and mobile.
-
-## Validation
-
-Run:
-
-```sh
-make
-```
-
-The default target checks that the expected static files exist, validates `manifest.json`, checks JavaScript syntax when `node` is available, and confirms that `sw.js` mentions every app shell file.
-
-Run:
-
-```sh
-make format
-```
-
-This formats JSON with Python's standard library and uses `prettier` for HTML, CSS, JS, SVG, and Markdown when `prettier` is already installed. Formatting is optional tooling, not part of the runtime app.
+- Use this repository as a template for a small static PWA.
+- Keep the app build-free: no bundler, transpiler, framework, package manager, lockfile, generated CSS, or compile step.
+- Keep the root app files simple and explicit: `index.html`, `style.css`, `app.js`, `sw.js`, `icon.svg`, and `manifest.json`.
+- Keep `README.md` short. A one-line description or deployed app link is enough.
+- Keep this `INSTRUCTIONS.md` current when template expectations change.
+- Use `index.html` for document structure, metadata, and links to app assets.
+- Use `style.css` for all styling.
+- Use `app.js` for browser logic and service worker registration.
+- Use `sw.js` only for service worker behavior.
+- Use `manifest.json` only for PWA install metadata.
+- Use `icon.svg` as both favicon and install icon unless the app has a clear reason to add more icon assets.
+- Prefer plain JavaScript, HTML, CSS, JSON, and SVG over dependencies.
+- Do not add dependencies for tasks the browser platform already handles well.
+- Keep JavaScript boring and readable: named constants, named functions, clear state, and explicit event handlers.
+- Do not hide important behavior in clever one-liners.
+- Keep DOM lookups near the top of `app.js` when the app is small.
+- Keep startup obvious. There should be one clear path that binds events, renders initial state, and registers the service worker.
+- Keep state explicit. Use plain objects, arrays, maps, or module-level variables when they are enough.
+- Keep rendering separate from state updates once the app has meaningful state.
+- Validate user input before writing it into application state.
+- Prefer rendering from state instead of letting DOM text, classes, or attributes become the source of truth.
+- Use button elements for actions.
+- Use labels for form inputs.
+- Preserve keyboard focus states.
+- Use `aria-live` or `role="status"` for dynamic text that users need to notice.
+- Keep CSS selectors purposeful. Prefer classes for styling and IDs for unique JavaScript hooks.
+- Keep layout responsive with simple `grid`, `flex`, `width: min(...)`, and media queries.
+- Do not use viewport-scaled font sizes for normal UI text.
+- Avoid decorative complexity in the template. Add richer UI only when the real app needs it.
+- Keep colors simple, but avoid making the entire app one undifferentiated hue.
+- Keep text inside its containers on small screens.
+- Do not add hidden build assumptions. Opening the files should reveal all runtime code.
+- Serve locally with `make serve` and open `http://localhost:8000/`.
+- Do not rely on `file://` for PWA testing. Service workers require `localhost` or HTTPS.
+- Keep the localhost development path cache-free. `sw.js` should not pre-cache or intercept fetches on `localhost`, `127.0.0.1`, or `::1`.
+- Keep deployed PWA behavior offline-capable. When not on localhost, `sw.js` should cache the app shell.
+- If a file is required for first load, list it in `sw.js`.
+- If an app shell file is removed, remove it from `sw.js`.
+- Bump the cache name in `sw.js` when changing cached app shell behavior for a deployed app.
+- Keep service worker logic small: install, activate, and fetch are usually enough.
+- Do not cache third-party requests in the template.
+- Do not swallow service worker registration failures silently. Logging a warning is enough for this template.
+- Keep `manifest.json` valid JSON.
+- Keep `manifest.json` aligned with `index.html`: app name, theme color, start URL, scope, and icon should agree.
+- Use `"display": "standalone"` unless the app specifically needs another display mode.
+- Use `"start_url": "."` and `"scope": "."` for simple root-hosted apps.
+- Keep `Makefile` small. It should expose only `format`, `check`, and `serve`.
+- The default `make` target should run `format check`.
+- Use `sponge` for in-place JSON formatting: `python3 -m json.tool --indent 2 manifest.json | sponge manifest.json`.
+- Use `prettier` only when it is already available; do not require a Node project just to format this template.
+- `make check` should verify required files, validate JSON, check JavaScript syntax when `node` is available, and confirm `sw.js` lists app shell files.
+- Run `make` before finishing changes.
+- Keep verification notes honest. Mention when optional tools such as `prettier` or `node` were not available.
+- Do not edit or rely on the example app repositories when finalizing this template. They are reference material only.
+- Remove local example repositories before publishing the final template, if they are still present.
