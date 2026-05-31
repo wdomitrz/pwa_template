@@ -3,6 +3,8 @@
 - Build a small static progressive web app in plain HTML, CSS, JavaScript, JSON, and SVG.
 - Keep the app build-free: no bundler, transpiler, framework, generated CSS, runtime package install, or compile step.
 - Keep the app files simple and explicit: `index.html`, `style.css`, `app.js`, `sw.js`, `icon.svg`, and `manifest.json`.
+- Prefer the simplest complete app behavior.
+- Keep features narrow, direct, and easy to explain.
 - Use `index.html` for semantic document structure, app metadata, and asset links.
 - Use `style.css` for all styling.
 - Use `app.js` for browser logic, state management, rendering, event handling, and service worker registration.
@@ -16,6 +18,7 @@
 - If an app appears to need a runtime dependency, make that need explicit before adding it.
 - Keep JavaScript readable: named constants, named functions, clear state, and explicit event handlers.
 - Do not hide important behavior in clever one-liners.
+- Avoid adding modes, settings, screens, persistence, or gestures unless they clearly improve the core workflow.
 - Keep DOM lookups easy to find. Put them near the top when that keeps the file clearer, but colocate them with related behavior when that is simpler.
 - Keep startup obvious. There should be one clear path that binds events, renders initial state, and registers the service worker.
 - Keep application state explicit. Use plain objects, arrays, maps, or module-level variables when they are enough.
@@ -39,6 +42,7 @@
 - Keep colors simple, but avoid making the entire app one undifferentiated hue.
 - Respect `prefers-color-scheme` when it is easy to do so.
 - Avoid decorative complexity unless it helps the app's actual purpose.
+- Keep the icon simple. A one-color transparent SVG is a good default.
 - Do not add hidden build assumptions. Opening the files should reveal all runtime code.
 - Serve locally with `make serve` and open `http://localhost:8000/`.
 - Do not rely on `file://` for PWA testing. Service workers require `localhost` or HTTPS.
