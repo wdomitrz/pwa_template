@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="A minimal static progressive web app template."
+    />
+    <meta name="theme-color" content="#0f766e" />
+    <title>Simple PWA Template</title>
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="style.css" />
+    <script defer src="app.js"></script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="app-panel" aria-labelledby="app-title">
+        <header class="app-header">
+          <img class="app-icon" src="icon.svg" alt="" width="64" height="64" />
+          <div>
+            <p class="eyebrow">Static PWA</p>
+            <h1 id="app-title">Hello, PWA</h1>
+          </div>
+        </header>
+
+        <p id="greeting-output" class="greeting-output" aria-live="polite">
+          Hello, World!
+        </p>
+
+        <form id="greeting-form" class="greeting-form">
+          <label class="field">
+            <span>Name</span>
+            <input
+              id="name-input"
+              name="name"
+              type="text"
+              autocomplete="name"
+              maxlength="40"
+              placeholder="World"
+            />
+          </label>
+
+          <div class="actions">
+            <button class="primary-button" type="submit">Say Hello</button>
+            <button class="secondary-button" id="reset-button" type="button">
+              Reset
+            </button>
+          </div>
+        </form>
+
+        <p id="app-status" class="app-status" role="status">
+          Starting app...
+        </p>
+      </section>
+    </main>
+
+    <noscript>This app needs JavaScript enabled.</noscript>
+  </body>
+</html>
