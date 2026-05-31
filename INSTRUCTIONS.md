@@ -9,7 +9,8 @@
 - Use `sw.js` only for service worker install, activate, and fetch behavior.
 - Use `manifest.json` only for PWA install metadata.
 - Use `icon.svg` as both favicon and install icon unless the app clearly needs additional icon files.
-- Keep `README.md` short: a one-line description or deployed app link is enough.
+- Keep `README.md` short: a one-line description and deployed app link are enough.
+- Update the deployed app link in `README.md` when the app name or deployment URL changes.
 - Prefer browser platform APIs over dependencies.
 - Do not add runtime dependencies for simple UI state, routing, storage, date handling, or DOM work.
 - If an app appears to need a runtime dependency, make that need explicit before adding it.
