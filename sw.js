@@ -1,7 +1,7 @@
 const CACHE_NAME = "simple-pwa-v1";
 const CACHE_PREFIX = "simple-pwa-";
 const IS_LOCAL = ["localhost", "127.0.0.1", "::1"].includes(
-  self.location.hostname
+  self.location.hostname,
 );
 const FILES = [
   "./",
@@ -33,11 +33,11 @@ self.addEventListener("activate", (event) => {
             .filter(
               (name) =>
                 (IS_LOCAL || name !== CACHE_NAME) &&
-                name.startsWith(CACHE_PREFIX)
+                name.startsWith(CACHE_PREFIX),
             )
-            .map((name) => caches.delete(name))
-        )
-      )
+            .map((name) => caches.delete(name)),
+        ),
+      ),
   );
 });
 
@@ -48,6 +48,6 @@ self.addEventListener("fetch", (event) => {
   event.respondWith(
     caches
       .match(event.request)
-      .then((response) => response || fetch(event.request))
+      .then((response) => response || fetch(event.request)),
   );
 });
