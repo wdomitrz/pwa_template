@@ -225,13 +225,23 @@ jobs:
           # The published SVG must be the committed icon, byte for byte. The
           # page links it and the worker precaches it, so a drift here is both
           # a wrong favicon and an install that fails.
+          #
+          # The digest below is the author's original and must equal
+          # ICON_SHA256 in tests/shell.rs -- the same value in two places,
+          # asserted equal by `both_workflows_pin_the_icon_the_repository_still_has`.
+          # It was NOT updated when the icon changed on 2026-10-01 (the `P` glyph
+          # gave way to three bars in a mid grey), because that commit touched
+          # assets/, src/ and tests/ and not .github/. This workflow therefore sat
+          # red from that commit until 2026-10-02, when adding `pages.yml` forced
+          # the check to be run for real. The test named above exists so the two
+          # copies cannot diverge again -- including the copy in `pages.yml`.
           with open("assets/icon.svg", "rb") as handle:
               source = handle.read()
           with open("dist/icon.svg", "rb") as handle:
               published = handle.read()
           assert published == source, "dist/icon.svg is not the committed icon"
           assert hashlib.sha256(source).hexdigest() == (
-              "fc82ef81db6f42ed9f098adb675218cfd8a980bfeb5c4e2509e08d5839f61851"
+              "5a7e307c7d61b27b8717fbe183be58f074af6c4ff438014ed246e0007cc24867"
           ), "assets/icon.svg is no longer the author's original"
           print("  ok   dist/icon.svg is the committed icon")
 
@@ -261,14 +271,24 @@ jobs:
           # with. `web-sys` exposes an unstable form of several accessors under
           # `--cfg=web_sys_unstable_apis`, and the two forms can differ in
           # *type* -- `MouseEvent::client_x` is `i32` on the stable path and
-          # `f64` on the unstable one, and `PointerEvent` inherits it. Code
-          # that only type-checks under one of them fails to compile under the
-          # other, in opposite directions, so a leg missing the cfg is not a
-          # weaker check: it lints a different program from the one that ships.
+          # `f64` on the unstable one, and `PointerEvent` inherits it. Code that
+          # only type-checks under one of them fails to compile under the other,
+          # in opposite directions, so a leg missing the cfg is not a weaker
+          # check: it lints a different program from the one that ships.
           #
-          # This crate uses no unstable APIs, so the two are equivalent here.
-          # An app that does must export the cfg for this step, the way
-          # `chwazi` does, or it will read a green that is not true.
+          # This crate uses no unstable APIs, so there is no `RUSTFLAGS` in
+          # this file's `env:` above and the two forms are equivalent here --
+          # verified 2026-10-02 by a clean wasm build with no cfg of any kind.
+          # That is the correct state, not an omission: adding the cfg to a repo
+          # that does not need it is what lints the *different* program, and it
+          # is what copying `chess_clock`'s workflow into a repo that does not
+          # use the Screen Wake Lock would do. An earlier version of this
+          # comment said an app that uses unstable APIs "must export the cfg for
+          # this step, the way `chwazi` does". That was false on two counts:
+          # `chwazi` uses no unstable API either, and it deliberately sets no
+          # `RUSTFLAGS`, with a long note in its own build.yml saying why. The
+          # instruction that survives is the last one -- lint both targets with
+          # the cfg the crate is actually built with, whatever that is.
           cargo clippy --locked --all-targets -- -D warnings
           cargo clippy --locked --lib --target wasm32-unknown-unknown -- -D warnings
 
