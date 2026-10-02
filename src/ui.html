@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Two theme colours, one per scheme, and no single one that has to guess.
+     An installed app's status bar is painted from these, so one hardcoded value
+     would put a dark bar on a light page (or the reverse) until the user changed
+     their phone. The manifest deliberately carries no `theme_color` for the same
+     reason: an installed app's chrome cannot express a scheme variant, so it
+     would override both of these. -->
+<meta name="theme-color" content="#f5f6f8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1117" media="(prefers-color-scheme: dark)">
+<meta name="description" content="A minimal offline-capable counter.">
+<title>Simple PWA</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<!-- The SVG is the icon: it is the committed source of truth, and the browser
+     scales it. The PNGs beside it are rasterized from this same file at build
+     time, for the manifest and for iOS. -->
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<style>
+/* One palette, borrowed from the server this app is served beside, so a PWA
+   opened from the same origin does not look like a different product. The names
+   are that project's tokens unchanged: a page that is restyled later reuses them
+   instead of inventing a second set of near-identical greys.
+
+   Dark is the default and light is the override, which is the reverse of the
+   `color-scheme: light dark` convention. It is deliberate: `color-scheme` names
+   the scheme the page is *drawn* in, and a reader who has not chosen anything
+   gets the one this app was designed in. A reader who has chosen gets theirs. */
+:root {
+  color-scheme: dark;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --bg: #0f1117;
+  --surface: #171a23;
+  --fg: #e4e7ec;
+  --muted: #8d94a3;
+  --accent: #5fd38a;
+  --accent-fg: #0c1a12;
+  --link: #79b8ff;
+  --border: #2b303c;
+  --danger: #ef6a6a;
+}
+
+* { box-sizing: border-box; }
+
+html { height: 100%; }
+
+body {
+  margin: 0 auto;
+  min-height: 100%;
+  max-width: 46rem;
+  padding: 1.5rem .75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
+  font-size: 13.5px;
+  line-height: 1.4;
+}
+
+main {
+  width: min(100%, 22rem);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: .6rem;
+  padding: .9rem 1rem 1rem;
+  text-align: center;
+}
+
+/* No heading, no logo, no status line: the readout is the whole interface. */
+#message {
+  margin: 0 0 .9rem;
+  font-family: var(--mono);
+  font-size: 1.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+button {
+  font: inherit;
+  font-size: .82rem;
+  font-weight: 600;
+  min-height: 44px;
+  padding: .28rem 1.1rem;
+  color: var(--accent-fg);
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: .5rem;
+  cursor: pointer;
+  /* Kill the 300ms tap delay and the double-tap zoom without a framework. */
+  touch-action: manipulation;
+  transition: filter .15s;
+}
+
+button:hover { filter: brightness(1.08); }
+
+button:active { filter: brightness(.9); }
+
+button:disabled {
+  opacity: .5;
+  cursor: default;
+  filter: none;
+}
+
+/* Never remove the focus ring without replacing it with something at least as
+   visible. */
+:focus-visible {
+  outline: 3px solid var(--link);
+  outline-offset: 3px;
+}
+
+/* The only line left below the button is the failure box, and it is hidden
+   until there is something to say — so when it does appear it carries its own
+   top rule, and the page shows no stray divider the rest of the time. */
+#error {
+  margin: .9rem 0 0;
+  padding-top: .55rem;
+  border-top: 1px solid var(--border);
+  color: var(--danger);
+  font-size: .78rem;
+  line-height: 1.5;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color-scheme: light;
+    --bg: #f5f6f8;
+    --surface: #ffffff;
+    --fg: #20242b;
+    --muted: #5b6270;
+    --accent: #0b8a4e;
+    --accent-fg: #ffffff;
+    --link: #0a5bd3;
+    --border: #d8dce2;
+    --danger: #c23434;
+  }
+}@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>
+</head>
+<body>
+<main>
+  <!-- The only element that changes when the app works. Rust owns its text from
+       the first frame, so there is no "loading" state to flash: the number is
+       real before the user can see it. `aria-live` makes every change announce
+       itself. The visible text is already the accessible name, so nothing here
+       needs a second one. -->
+  <p id="message" role="status" aria-live="polite">0 — nothing yet</p>
+  <!-- The label says what the button does. It used to say "Say hello", left
+       over from a template whose app only printed a greeting. -->
+  <button id="hello-button" type="button">Add one</button>
+
+  <!-- Nothing here says the app is ready for offline use. A line that only ever
+       reports good news the reader did not ask about is noise, and it was the
+       only thing standing between the button and the bottom of the panel. The
+       worker still registers, and the failure case below is the one worth a
+       line of the reader's attention. -->
+  <p id="error" role="alert" hidden></p>
+</main>
+<noscript>This counter needs JavaScript enabled. Turn it on and reload to use it.</noscript>
+<!-- The one script in the document: it hands over to the generated bindings and
+     does nothing else. No state, no rendering, no event handling — everything
+     below the import is the failure message for the case where the app never
+     loads, which is a real case worth saying something about. The wording says
+     what the user loses, never what the app is built with. -->
+<script type="module">
+import('./app.js').then(m => m.default()).catch(error => {
+  const box = document.getElementById('error');
+  box.hidden = false;
+  box.textContent = 'Simple PWA could not start. Reload the page, or check your connection. ' + error;
+});
+</script>
+</body>
+</html>
